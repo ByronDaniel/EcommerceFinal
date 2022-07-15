@@ -1,9 +1,12 @@
 using BP.Ecommerce.Application;
 using BP.Ecommerce.Infraestructure;
+using BP.Ecommerce.Infraestructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddInfraestructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddCors();
