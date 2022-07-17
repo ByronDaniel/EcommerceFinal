@@ -38,7 +38,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             bool itemExist = context.Set<T>().Any(t => t.Name == item.Name && t.Status);
             if (itemExist)
             {
-                throw new ArgumentNullException($"Ya existe el registro con nombre: {item.Name}");
+                throw new ArgumentException($"Ya existe el registro con nombre: {item.Name}");
             }
             await context.Set<T>().AddAsync(item);
             await context.SaveChangesAsync();
@@ -49,7 +49,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
         {
             bool itemFind = context.Set<T>().Any(t=>t.Id == item.Id && t.Status);
             if (!itemFind)
-                throw new ArgumentNullException($"No existe el registro con id: {item.Id}");
+                throw new ArgumentException($"No existe el registro con id: {item.Id}");
             
             itemFind = context.Set<T>().Any(t => t.Name.ToUpper() == item.Name.ToUpper() && t.Status);
             if (itemFind)

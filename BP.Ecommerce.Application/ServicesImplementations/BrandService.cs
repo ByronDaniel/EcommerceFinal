@@ -3,6 +3,7 @@ using BP.Ecommerce.Application.DTOs;
 using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace BP.Ecommerce.Application.ServicesImplementations
     {
         private readonly IGenericRepository<Brand> repository;
         private readonly IMapper mapper;
+        private readonly IValidator<CreateBrandDto> validator;
 
-        public BrandService(IGenericRepository<Brand> repository, IMapper mapper)
+        public BrandService(IGenericRepository<Brand> repository, IMapper mapper, IValidator<CreateBrandDto> validator)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.validator = validator;
         }
 
         public async Task<List<BrandDto>> GetAllAsync()
@@ -36,6 +39,8 @@ namespace BP.Ecommerce.Application.ServicesImplementations
 
         public async Task<BrandDto> PostAsync(CreateBrandDto createBrandDto)
         {
+            await validator.ValidateAndThrowAsync(createBrandDto);
+
             Brand brand = mapper.Map<Brand>(createBrandDto);
             Brand brandResult = await repository.PostAsync(brand);
             return mapper.Map<BrandDto>(brandResult);
