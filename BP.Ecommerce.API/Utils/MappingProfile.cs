@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using BP.Ecommerce.Application.DTOs;
+using BP.Ecommerce.Domain.Entities;
 
 namespace BP.Ecommerce.API.Utils
 {
@@ -6,7 +8,9 @@ namespace BP.Ecommerce.API.Utils
     {
         public MappingProfile()
         {
-            //CreateMap<CreateBrandDto, Brand>();
+            CreateMap<Brand, BrandDto>();
+            CreateMap<BrandDto, Brand>();
+            CreateMap<CreateBrandDto, Brand>();
         }
     }
 }

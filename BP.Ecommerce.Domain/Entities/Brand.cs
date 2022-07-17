@@ -2,12 +2,8 @@
 
 namespace BP.Ecommerce.Domain.Entities
 {
-    public class Brand
+    public class Brand : CatalogueEntity
     {
-        [Key]
-        public Guid Id { get; set; }
 
-        [Required, MaxLength(30)]
-        public string Name { get; set; }
     }
 }

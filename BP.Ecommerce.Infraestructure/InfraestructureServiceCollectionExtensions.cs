@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using BP.Ecommerce.Domain.RepositoriesInterfaces;
+using BP.Ecommerce.Infraestructure.RepositoriesImplementations;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ namespace BP.Ecommerce.Infraestructure
     {
         public static IServiceCollection AddInfraestructure(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             return services;
         }
     }
