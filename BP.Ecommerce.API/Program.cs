@@ -1,3 +1,4 @@
+using BP.Ecommerce.API.Filters;
 using BP.Ecommerce.Application;
 using BP.Ecommerce.Infraestructure;
 using BP.Ecommerce.Infraestructure.Data;
@@ -11,9 +12,14 @@ builder.Services.AddDbContext<EcommerceDbContext>(options => options.UseSqlServe
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddInfraestructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
+
 builder.Services.AddCors();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    //Aplicar filter globalmente a todos los controller
+    options.Filters.Add<ApiExceptionFilterAttribute>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
