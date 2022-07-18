@@ -13,7 +13,7 @@ namespace BP.Ecommerce.Domain.RepositoriesInterfaces
         /// Get all 
         /// </summary>
         /// <returns>List of objects</returns>
-        public Task<List<T>> GetAllAsync();
+        public Task<List<T>> GetAllAsync(string? search, string? sort, string? order, int? limit, int? offset);
 
         /// <summary>
         /// Get By Id

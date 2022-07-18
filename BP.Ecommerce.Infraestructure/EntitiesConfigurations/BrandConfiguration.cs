@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
 {
-    public class BrandConfiguration : IEntityTypeConfiguration<Brand>
+    public class BrandConfiguration //: IEntityTypeConfiguration<Brand>
     {
-        public void Configure(EntityTypeBuilder<Brand> builder)
-        {
-            builder.Property("Id")
-                         .ValueGeneratedOnAdd()
-                         .HasColumnType("uniqueidentifier");
+        //public void Configure(EntityTypeBuilder<Brand> builder)
+        //{
+        //    builder.Property("Id")
+        //                 .ValueGeneratedOnAdd()
+        //                 .HasColumnType("uniqueidentifier");
 
-            builder.Property("Name")
-                .IsRequired()
-                .HasMaxLength(30)
-                .HasColumnType("nvarchar(30)");
+        //    builder.Property("Name")
+        //        .IsRequired()
+        //        .HasMaxLength(30)
+        //        .HasColumnType("nvarchar(30)");
 
-            builder.HasKey("Id");
+        //    builder.HasKey("Id");
 
-            builder.ToTable("Brands");
+        //    builder.ToTable("Brands");
 
-        }
+        //}
     }
 }

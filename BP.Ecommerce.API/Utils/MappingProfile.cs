@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BP.Ecommerce.Application.Dtos;
 using BP.Ecommerce.Application.DTOs;
 using BP.Ecommerce.Domain.Entities;
 
@@ -11,6 +12,26 @@ namespace BP.Ecommerce.API.Utils
             CreateMap<Brand, BrandDto>();
             CreateMap<BrandDto, Brand>();
             CreateMap<CreateBrandDto, Brand>();
+
+            CreateMap<ProductType, ProductTypeDto>();
+            CreateMap<ProductTypeDto, ProductType>();
+            CreateMap<CreateProductTypeDto, ProductType>();
+
+            CreateMap<OrderProduct, OrderProductDto>();
+            CreateMap<OrderProductDto, OrderProduct>();
+
+            CreateMap<Order, OrderDto>();
+            CreateMap<OrderDto, Order>();
+
+            CreateMap<CreateProductDto, Product>();
+
+            CreateMap<CreateOrderProductDto, OrderProduct>();
+
+            CreateMap<UpdateOrderProductDto, OrderProduct>();
+
+            CreateMap<ProductDto, Product>();
+
+
         }
     }
 }

@@ -24,10 +24,6 @@ namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
                 .IsRequired()
                 .HasColumnType("nvarchar(max)");
 
-            builder.Property("ImageUrl")
-                .IsRequired()
-                .HasColumnType("nvarchar(max)");
-
             builder.Property("Name")
                 .IsRequired()
                 .HasMaxLength(40)
@@ -39,10 +35,7 @@ namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
             builder.Property("ProductTypeId")
                 .HasColumnType("uniqueidentifier");
 
-            builder.Property("QuantityAvailable")
-                .HasColumnType("int");
-
-            builder.Property("QuantitySold")
+            builder.Property("Stock")
                 .HasColumnType("int");
 
             builder.HasKey("Id");

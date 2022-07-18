@@ -7,35 +7,35 @@ namespace BP.Ecommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class ProductTypeController : ControllerBase
     {
-        private readonly IBrandService service;
+        private readonly IProductTypeService service;
 
-        public BrandController(IBrandService service)
+        public ProductTypeController(IProductTypeService service)
         {
             this.service = service;
         }
 
         [HttpGet]
-        public async Task<List<BrandDto>> GetAllAsync(string? search = "", string? sort = "", string? order = "", int? limit = 5, int? offset = 0)
+        public async Task<List<ProductTypeDto>> GetAllAsync(string? search = "", string? sort = "", string? order = "", int? limit = 5, int? offset = 0)
         {
             return await service.GetAllAsync(search, sort, order, limit, offset);
         }
 
         [HttpGet("{id}")]
-        public async Task<BrandDto> GetByIdAsync(Guid id)
+        public async Task<ProductTypeDto> GetByIdAsync(Guid id)
         {
             return await service.GetByIdAsync(id);
         }
 
         [HttpPost]
-        public async Task<BrandDto> PostAsync(CreateBrandDto createBrandDto)
+        public async Task<ProductTypeDto> PostAsync(CreateProductTypeDto createProductTypeDto)
         {
-            return await service.PostAsync(createBrandDto);
+            return await service.PostAsync(createProductTypeDto);
         }
 
         [HttpPut]
-        public async Task<BrandDto> PutAsync(BrandDto brandDto)
+        public async Task<ProductTypeDto> PutAsync(ProductTypeDto brandDto)
         {
             return await service.PutAsync(brandDto);
         }

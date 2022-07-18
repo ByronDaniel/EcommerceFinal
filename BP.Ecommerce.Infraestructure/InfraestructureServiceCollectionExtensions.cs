@@ -1,12 +1,8 @@
 ﻿using BP.Ecommerce.Domain.RepositoriesInterfaces;
+using BP.Ecommerce.Domain.RepositoryInterfaces;
 using BP.Ecommerce.Infraestructure.RepositoriesImplementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure
 {
@@ -15,6 +11,8 @@ namespace BP.Ecommerce.Infraestructure
         public static IServiceCollection AddInfraestructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IEcommerceRepository, EcommerceRepository>();
             return services;
         }
     }

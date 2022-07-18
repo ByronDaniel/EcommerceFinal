@@ -3,12 +3,7 @@ using BP.Ecommerce.Application.ServicesInterfaces;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Application
 {
@@ -18,6 +13,10 @@ namespace BP.Ecommerce.Application
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IProductTypeService, ProductTypeService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IEcommerceService, EcommerceService>();
+
             return services;
         }
     }

@@ -4,7 +4,7 @@
 
 namespace BP.Ecommerce.Infraestructure.Migrations
 {
-    public partial class AddEntitiesWith : Migration
+    public partial class updatedbb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

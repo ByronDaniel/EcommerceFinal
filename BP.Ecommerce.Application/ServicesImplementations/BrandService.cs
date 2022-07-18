@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BP.Ecommerce.Application.DTOs;
+using BP.Ecommerce.Application.Exceptions;
 using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
@@ -25,15 +26,18 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             this.validator = validator;
         }
 
-        public async Task<List<BrandDto>> GetAllAsync()
+        public async Task<List<BrandDto>> GetAllAsync(string? search, string? sort, string? order, int? limit = 0, int? offset = 0)
         {
-            List<Brand> brands = await repository.GetAllAsync();
+            List<Brand> brands = await repository.GetAllAsync(search, sort, order, limit, offset);
             return mapper.Map<List<BrandDto>>(brands);
         }
 
         public async Task<BrandDto> GetByIdAsync(Guid id)
         {
             Brand brand = await repository.GetByIdAsync(id);
+            if (brand == null)
+                throw new NotFoundException($"No existe el registro con id: {id}");
+            
             return mapper.Map<BrandDto>(brand);
         }
 

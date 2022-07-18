@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Domain.Entities
 {
-    public class BaseEntity
+    public class AuditoryEntity : BaseEntity
     {
-        public DateTime DateCreation { get; set; } = DateTime.Now;
-        public DateTime DateModification { get; set; }
+        public DateTime DateDeleted { get; set; }
+        
+        public string State { get; set; } = Status.Vigente.ToString();
     }
 }

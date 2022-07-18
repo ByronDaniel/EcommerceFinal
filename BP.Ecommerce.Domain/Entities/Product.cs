@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BP.Ecommerce.Domain.Entities
 {
-    public class Product
+    public class Product : AuditoryEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -12,20 +12,14 @@ namespace BP.Ecommerce.Domain.Entities
         public string Name { get; set; }
         
         [Required]
-        public string ImageUrl { get; set; }
-
-        [Required]
         public string Description { get; set; }
         
         [Required]
         public decimal Price { get; set; }
 
         [Required]
-        public int QuantityAvailable { get; set; }
+        public int Stock { get; set; }
 
-        [Required]
-        public int QuantitySold { get; set; } = 0;
-        
         [Required]
         public Guid ProductTypeId { get; set; }
 

@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Domain.Entities
 {
-    public class BaseEntity
+    public enum Status
     {
-        public DateTime DateCreation { get; set; } = DateTime.Now;
-        public DateTime DateModification { get; set; }
+        Pendiente,
+        Cancelado,
+        Pagado,
+        Rembolsado,
+        Eliminado,
+        Vigente
     }
 }

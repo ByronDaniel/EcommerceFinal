@@ -2,11 +2,6 @@
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
 using BP.Ecommerce.Infraestructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 {
@@ -19,27 +14,47 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             this.context = context;
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(string? search, string? sort, string? order, int? limit, int? offset)
         {
-            return await context.Set<T>().Where(t => t.Status).ToListAsync();
+            //filter by status
+            var query = context.Set<T>().Where(t => t.State == Status.Vigente.ToString());
+            //filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => t.Name == search);
+            }
+            //Sort and order
+            if (!string.IsNullOrEmpty(sort))
+            {
+                switch (sort.ToUpper())
+                {
+                    case "NAME":
+                        query = query.OrderBy(t => t.Name);
+                        break;
+
+                }
+            }
+
+            query = query.OrderBy(t => t.Name);
+            //pagination
+
+            return await context.Set<T>().Where(t => t.State == Status.Vigente.ToString()).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            T item = await context.Set<T>().Where(t => t.Status && t.Id == id).SingleOrDefaultAsync();
-            if (item == null)
-                throw new ArgumentException($"No existe el registro con id: {id}");
-
+            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString()  && t.Id == id).SingleOrDefaultAsync();
             return item;
         }
 
         public async Task<T> PostAsync(T item)
         {
-            bool itemExist = context.Set<T>().Any(t => t.Name == item.Name && t.Status);
+            bool itemExist = context.Set<T>().Any(t => t.Name == item.Name && t.State == Status.Vigente.ToString());
             if (itemExist)
             {
                 throw new ArgumentException($"Ya existe el registro con nombre: {item.Name}");
             }
+            item.Name = item.Name.ToUpper();
             await context.Set<T>().AddAsync(item);
             await context.SaveChangesAsync();
             return item;
@@ -47,11 +62,11 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<T> PutAsync(T item)
         {
-            bool itemFind = context.Set<T>().Any(t=>t.Id == item.Id && t.Status);
+            bool itemFind = context.Set<T>().Any(t=>t.Id == item.Id && t.State == Status.Vigente.ToString());
             if (!itemFind)
                 throw new ArgumentException($"No existe el registro con id: {item.Id}");
             
-            itemFind = context.Set<T>().Any(t => t.Name.ToUpper() == item.Name.ToUpper() && t.Status);
+            itemFind = context.Set<T>().Any(t => t.Name.ToUpper() == item.Name.ToUpper() && t.State == Status.Vigente.ToString() && t.Id != item.Id);
             if (itemFind)
             {
                 throw new ArgumentException($"Ya existe el registro con nombre: {item.Name}");
@@ -65,16 +80,17 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            T item = await context.Set<T>().Where(t => t.Status && t.Id == id).SingleOrDefaultAsync();
+            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
             if (item == null)
                 throw new ArgumentException($"No existe el registro con id: {id}");
 
             item.DateDeleted = DateTime.Now;
-            item.Status = false;
+            item.State = Status.Eliminado.ToString();
 
             context.Entry(item).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return true;
         }
+
     }
 }
