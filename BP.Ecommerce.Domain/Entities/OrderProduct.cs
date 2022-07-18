@@ -25,5 +25,7 @@ namespace BP.Ecommerce.Domain.Entities
 
         [Required]
         public int ProductQuantity { get; set; } = 1;
+
+        public decimal Total { get; set; }
     }
 }

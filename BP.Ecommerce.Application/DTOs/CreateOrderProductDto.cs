@@ -9,7 +9,7 @@ namespace BP.Ecommerce.Application.DTOs
     public class CreateOrderProductDto
     {
         public Guid ProductId { get; set; }
+        public int ProductQuantity { get; set; }
         public Guid? OrderId { get; set; }
-        public int ProductQuantity { get; set; } = 1;
     }
 }

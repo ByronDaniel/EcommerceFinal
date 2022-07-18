@@ -17,8 +17,8 @@ namespace BP.Ecommerce.Domain.Entities
         [ForeignKey("DeliveryMethodId")]
         public DeliveryMethod? DeliveryMethod { get; set; }
         
-        public decimal? Subtotal { get; set; }
-        public decimal? TotalPrice { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal TotalPrice { get; set; }
         public virtual List<OrderProduct> orderProducts { get; set; }
         
     }
