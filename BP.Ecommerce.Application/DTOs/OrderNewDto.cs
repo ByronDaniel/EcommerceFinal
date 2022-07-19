@@ -1,9 +1,7 @@
 ﻿namespace BP.Ecommerce.Application.DTOs
 {
-    public class ProductTypeDto
+    public class OrderNewDto
     {
         public Guid Id { get; set; }
-
-        public string Name { get; set; }
     }
 }

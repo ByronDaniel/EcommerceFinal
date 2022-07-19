@@ -2,71 +2,76 @@
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
 using BP.Ecommerce.Infraestructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 {
-    public class CartRepository : ICartRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly EcommerceDbContext context;
 
-        public CartRepository(EcommerceDbContext context)
+        public OrderRepository(EcommerceDbContext context)
         {
             this.context = context;
         }
 
-        public async Task<OrderProduct> AddProductAsync(OrderProduct orderProduct)
+        public async Task<Order> CreateOrderAsync()
         {
-            Product product = await ValidateQuantityStock(orderProduct);
-            //si orderProduct.OrderId es vacio crear orden, si no es vacio y la orden existe agrega el producto a la orden
-            Order order = new Order();
-            OrderProduct orderProductExist = new OrderProduct();
-            if (orderProduct.OrderId == Guid.Empty)
+            Order order = new Order()
             {
-                order = await CreateOrderAsync();
-                orderProduct.OrderId = order.Id;
+                State = Status.Pendiente.ToString(),
+                Subtotal = 0,
+                TotalPrice = 0
+            };
+            await context.Order.AddAsync(order);
+            await context.SaveChangesAsync();
+            return order;
+        }
+
+        public async Task<OrderProduct> AddProductAsync(Guid orderId, OrderProduct orderProduct)
+        {
+            Order orderFind = await context.Order.Where(o => o.Id == orderId && o.State == Status.Pendiente.ToString()).SingleOrDefaultAsync();
+            if (orderFind == null)
+                throw new ArgumentException($"No existe la orden con id: {orderId}");
+
+            Product product = await ValidateQuantityStock(orderProduct);
+            OrderProduct orderProductExist = await context.OrderProducts.Where(o => o.OrderId == orderId && o.ProductId == product.Id).SingleOrDefaultAsync();
+            //Modificamos la cantidad si existe la orden con producto
+            orderProduct.OrderId = orderId;
+            if (orderProductExist == null)
+            {
                 orderProduct.Total = product.Price * orderProduct.ProductQuantity;
-                //Agregamos orderProduct y guardar cambios
                 await context.OrderProducts.AddAsync(orderProduct);
                 await context.SaveChangesAsync();
             }
             else
             {
-                Order orderFind = await FindOrderAsync(orderProduct);
-                orderProductExist = await context.OrderProducts.Where(o => o.OrderId == orderFind.Id && o.ProductId == product.Id).SingleOrDefaultAsync();
-                //Modificamos la cantidad si existe la orden con producto
-                if (orderProductExist != null)
-                {
-                    orderProductExist.ProductQuantity += orderProduct.ProductQuantity;
-                    orderProductExist.Total += product.Price * orderProduct.ProductQuantity;
-                    context.Entry(orderProductExist).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                }
-                else
-                {
-                    orderProduct.Total = product.Price * orderProduct.ProductQuantity;
-                    await context.OrderProducts.AddAsync(orderProduct);
-                    await context.SaveChangesAsync();
-                }
+                orderProductExist.ProductQuantity += orderProduct.ProductQuantity;
+                orderProductExist.Total += product.Price * orderProduct.ProductQuantity;
+                context.Entry(orderProductExist).State = EntityState.Modified;
+                await context.SaveChangesAsync();
             }
+
             //Quitar cantidad seleccionada de productos al stock del producto y actualizar producto
             product.Stock -= orderProduct.ProductQuantity;
             context.Entry(product).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            //Si no existe orden retorna la orden creada, sino retorna orden existente
-            if (order.Id != Guid.Empty || orderProductExist == null)
+            //retorna orden existente
+            if (orderProductExist == null)
             {
                 return orderProduct;
             }
-            return orderProductExist;
+            else
+            {
+                return orderProductExist;
+            }
         }
 
         public async Task<OrderProduct> UpdateProductAsync(Guid orderId, OrderProduct orderProduct)
         {
+            Order orderFind = await context.Order.Where(o => o.Id == orderId && o.State == Status.Pendiente.ToString()).SingleOrDefaultAsync();
+            if (orderFind == null)
+                throw new ArgumentException($"No existe la orden con id: {orderId}");
+
             OrderProduct orderProductFind = await context.OrderProducts.Where(o => o.ProductId == orderProduct.ProductId && o.OrderId == orderId).SingleOrDefaultAsync();
             Product product = await ValidateQuantityStock(orderProduct, 'U');
             //Si voy a aumentar cantidad de producto, restar stock del producto,
@@ -75,9 +80,9 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             var stockAumentado = (orderProductFind.ProductQuantity - orderProduct.ProductQuantity);
             if (orderProductFind.ProductQuantity < orderProduct.ProductQuantity)
             {
-                if(product.Stock - stockRestado < 0)
-                    throw new ArgumentException($"No hay suficiente stock del producto, cantidad disponible: {product.Stock}, cantidad seleccionada: {orderProduct.ProductQuantity}");
-                
+                if (product.Stock - stockRestado < 0)
+                    throw new ArgumentException($"No hay suficiente stock, unidades disponibles: {product.Stock}");
+
                 product.Stock -= stockRestado;
             }
             else
@@ -89,27 +94,29 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             }
             context.Entry(product).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            
+
             orderProductFind.ProductQuantity = orderProduct.ProductQuantity;
             orderProductFind.Total = product.Price * orderProductFind.ProductQuantity;
-            
             context.Entry(orderProductFind).State = EntityState.Modified;
             await context.SaveChangesAsync();
 
             return orderProductFind;
         }
-        
+
         public async Task<bool> RemoveProductAsync(Guid orderId, Guid productId)
         {
+            Order orderFind = await context.Order.Where(o => o.Id == orderId && o.State == Status.Pendiente.ToString()).SingleOrDefaultAsync();
+            if (orderFind == null)
+                throw new ArgumentException($"No existe la orden con id: {orderId}");
             //devolver stock del producto 
-            OrderProduct orderProduct = await context.OrderProducts.Where(o=> o.OrderId == orderId && o.ProductId == productId).SingleOrDefaultAsync();
+            OrderProduct orderProduct = await context.OrderProducts.Where(o => o.OrderId == orderId && o.ProductId == productId).SingleOrDefaultAsync();
             if (orderProduct == null)
                 throw new ArgumentException($"No existe la orden {orderId} con el producto {productId}");
             context.OrderProducts.Remove(orderProduct);
             await context.SaveChangesAsync();
 
             var quantity = orderProduct.ProductQuantity;
-            Product product = await  context.Products.FindAsync(productId);
+            Product product = await context.Products.FindAsync(productId);
             if (product == null)
                 throw new ArgumentException($"No existe el producto {productId}");
             product.Stock += quantity;
@@ -119,14 +126,14 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             return true;
         }
 
-        public IQueryable<Order> GetByIdAsync(Guid orderId)
+        public IQueryable<Order> GetOrderByIdAsync(Guid orderId)
         {
-            return context.Order.Where(o=> o.Id == orderId).AsQueryable();
+            return context.Order.Where(o => o.Id == orderId).AsQueryable();
         }
-        
+
         public async Task<IQueryable<Order>> PayAsync(Guid orderId)
         {
-            IQueryable<Order> query = context.Order.Where(o => o.Id == orderId).AsQueryable();
+            IQueryable<Order> query = context.Order.Where(o => o.Id == orderId && o.State == Status.Pendiente.ToString()).AsQueryable();
             Order order = await query.SingleOrDefaultAsync();
             if (order == null)
                 throw new ArgumentException($"No existe la orden con id: {orderId}");
@@ -137,28 +144,25 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             await context.SaveChangesAsync();
             return query;
         }
-        
+
         public async Task<IQueryable<Order>> CancelAsync(Guid orderId)
         {
-            var query = context.Order.Where(o=> o.Id == orderId).AsQueryable();
+
+            var query = context.Order.Where(o => o.Id == orderId && (o.State == Status.Pagado.ToString() || o.State == Status.Pendiente.ToString())).AsQueryable();
             Order order = await query.SingleOrDefaultAsync();
             if (order == null)
                 throw new ArgumentException($"No existe la orden con id: {orderId}");
-            if (order.State == Status.Pagado.ToString() || order.State == Status.Pendiente.ToString())
+
+            List<OrderProduct> orderProducts = await context.OrderProducts.Where(o => o.OrderId == orderId).ToListAsync();
+            Product productSelected = new Product();
+            foreach (var orderProduct in orderProducts)
             {
-                List<OrderProduct> orderProducts = await context.OrderProducts.Where(o => o.OrderId == orderId).ToListAsync();
-                Product productSelected = new Product();
-                foreach (var orderProduct in orderProducts) {
-                    productSelected = await context.Products.Where(o=> o.Id == orderProduct.ProductId).SingleAsync();
-                    productSelected.Stock += orderProduct.ProductQuantity;
-                    context.Entry(productSelected).State = EntityState.Modified;
-                    await context.SaveChangesAsync();
-                }
+                productSelected = await context.Products.Where(o => o.Id == orderProduct.ProductId).SingleAsync();
+                productSelected.Stock += orderProduct.ProductQuantity;
+                context.Entry(productSelected).State = EntityState.Modified;
+                await context.SaveChangesAsync();
             }
-            else
-            {
-                throw new ArgumentException($"No se puede cancelar o rembolsar la orden porque el estado actual es: {order.State}");
-            }
+
             if (order.State == Status.Pendiente.ToString())
             {
                 order.State = Status.Cancelado.ToString();
@@ -175,47 +179,26 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<Product> ValidateQuantityStock(OrderProduct orderProduct, char operation = 'C')
         {
-            //Validar que la cantidad sea mayor a 0
-            if (orderProduct.ProductQuantity <= 0)
-                throw new ArgumentException("La cantidad seleccionada debe ser mayor a 0");
-
             //Consultar y validar si existe el producto seleccionado
             Product product = await context.Products.FindAsync(orderProduct.ProductId);
             if (product == null)
                 throw new ArgumentException($"No existe el producto con Id: {orderProduct.ProductId}");
+
+            //Validar que la cantidad sea mayor a 0
+            if (orderProduct.ProductQuantity <= 0)
+                throw new ArgumentException("La cantidad seleccionada debe ser mayor a 0");
+
             if (operation != 'U')
             {
                 //Validar que la cantidad seleccionada sea menor al stock del producto, y que el stock es 0
                 if (product.Stock < orderProduct.ProductQuantity || product.Stock == 0)
-                    throw new ArgumentException($"No suficiente stock del producto, cantidad disponible: {product.Stock}, cantidad seleccionada: {orderProduct.ProductQuantity}");
+                    throw new ArgumentException($"No hay suficiente stock, unidades disponibles: {product.Stock}");
             }
 
             return product;
         }
 
-        public async Task<Order> CreateOrderAsync()
-        {
-            //Creando la nueva orden
-            Order order = new Order()
-            {
-                State = Status.Pendiente.ToString(),
-                Subtotal = 0,
-                TotalPrice = 0
-            };
-            await context.Order.AddAsync(order);
-            await context.SaveChangesAsync();
-            return order;
-        }
-
-        public async Task<Order> FindOrderAsync(OrderProduct orderProduct)
-        {
-            Order orderFind = await context.Order.FindAsync(orderProduct.OrderId);
-            if (orderFind == null)
-                throw new ArgumentException($"No existe la orden con id: {orderProduct.OrderId}");
-            return orderFind;
-        }
-
-        public async Task<Order> UpdateOrderAsync(Guid orderId ,decimal subtotal, decimal totalPrice)
+        public async Task<Order> UpdateOrderAsync(Guid orderId, decimal subtotal, decimal totalPrice)
         {
             Order order = await context.Order.FindAsync(orderId);
             if (order == null)

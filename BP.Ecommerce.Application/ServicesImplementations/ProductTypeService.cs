@@ -5,11 +5,6 @@ using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Application.ServicesImplementations
 {

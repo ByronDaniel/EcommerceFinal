@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 {
-    public class GenericRepository<T>: IGenericRepository<T> where T : CatalogueEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : CatalogueEntity
     {
         private readonly EcommerceDbContext context;
 
@@ -43,7 +43,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString()  && t.Id == id).SingleOrDefaultAsync();
+            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
             return item;
         }
 
@@ -62,10 +62,10 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<T> PutAsync(T item)
         {
-            bool itemFind = context.Set<T>().Any(t=>t.Id == item.Id && t.State == Status.Vigente.ToString());
+            bool itemFind = context.Set<T>().Any(t => t.Id == item.Id && t.State == Status.Vigente.ToString());
             if (!itemFind)
                 throw new ArgumentException($"No existe el registro con id: {item.Id}");
-            
+
             itemFind = context.Set<T>().Any(t => t.Name.ToUpper() == item.Name.ToUpper() && t.State == Status.Vigente.ToString() && t.Id != item.Id);
             if (itemFind)
             {

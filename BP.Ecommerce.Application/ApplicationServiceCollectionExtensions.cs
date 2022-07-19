@@ -15,7 +15,7 @@ namespace BP.Ecommerce.Application
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IProductTypeService, ProductTypeService>();
             services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }

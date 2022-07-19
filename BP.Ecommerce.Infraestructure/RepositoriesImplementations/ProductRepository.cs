@@ -2,11 +2,6 @@
 using BP.Ecommerce.Domain.RepositoryInterfaces;
 using BP.Ecommerce.Infraestructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 {
@@ -72,7 +67,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             var query = _context.Products.Where(b => b.Name == product.Name);
             if (product.Stock < 0)
                 throw new ArgumentException("El stock debe ser mayor igual a 0");
-            
+
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
             return query;

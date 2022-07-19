@@ -4,10 +4,6 @@ using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
 using BP.Ecommerce.Domain.RepositoryInterfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BP.Ecommerce.Application.ServicesImplementations
 {

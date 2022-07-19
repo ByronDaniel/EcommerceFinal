@@ -1,51 +1,58 @@
 ﻿using BP.Ecommerce.Application.DTOs;
 using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BP.Ecommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly ICartService service;
+        private readonly IOrderService service;
 
-        public CarController(ICartService service)
+        public OrderController(IOrderService service)
         {
             this.service = service;
         }
 
-        [HttpPost("AddProduct")]
-        public async Task<OrderProductDto> AddProductAsync(CreateOrderProductDto createOrderProduct)
+        [HttpPost]
+        public async Task<OrderNewDto> CreateOrderAsync()
         {
-            return await service.AddProductAsync(createOrderProduct);
+            return await service.CreateOrderAsync();
         }
 
-        [HttpPut("{orderId}/UpdateProduct")]
+        [HttpPost("{orderId}/Product")]
+        public async Task<OrderProductDto> AddProductAsync(Guid orderId, AddProductDto addProductDto)
+        {
+            return await service.AddProductAsync(orderId, addProductDto);
+        }
+
+        [HttpPut("{orderId}/Product")]
         public async Task<OrderProductDto> UpdateProductAsync(Guid orderId, UpdateOrderProductDto orderProduct)
         {
             return await service.UpdateProductAsync(orderId, orderProduct);
         }
-        [HttpDelete("{orderId}/RemoverProduct/{productId}")]
+
+        [HttpDelete("{orderId}/Product/{productId}")]
         public async Task<bool> RemoveProductAsync(Guid orderId, Guid productId)
         {
             return await service.RemoveProductAsync(orderId, productId);
         }
-        [HttpGet("{orderId}")]
+
+        [HttpGet("Show/{orderId}")]
         public async Task<OrderDto> GetByIdAsync(Guid orderId)
         {
             return await service.GetByIdAsync(orderId);
         }
 
-        [HttpPut("{orderId}/Pay")]
+        [HttpPut("Pay/{orderId}")]
         public async Task<OrderDto> PayAsync(Guid orderId)
         {
             return await service.PayAsync(orderId);
         }
 
-        [HttpPut("{orderId}/Cancel")]
+        [HttpPut("Cancel/{orderId}")]
         public async Task<OrderDto> CancelAsync(Guid orderId)
         {
             return await service.CancelAsync(orderId);

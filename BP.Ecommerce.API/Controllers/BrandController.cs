@@ -1,6 +1,5 @@
 ﻿using BP.Ecommerce.Application.DTOs;
 using BP.Ecommerce.Application.ServicesInterfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BP.Ecommerce.API.Controllers

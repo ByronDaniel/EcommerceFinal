@@ -12,7 +12,7 @@ namespace BP.Ecommerce.Infraestructure
         {
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddTransient<ICartRepository, CartRepository>();
+            services.AddTransient<IOrderRepository, OrderRepository>();
             return services;
         }
     }

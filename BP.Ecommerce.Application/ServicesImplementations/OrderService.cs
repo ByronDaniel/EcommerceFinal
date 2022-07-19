@@ -4,71 +4,52 @@ using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
 using BP.Ecommerce.Domain.RepositoriesInterfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Application.ServicesImplementations
 {
-    public class CartService : ICartService
+    public class OrderService : IOrderService
     {
-        private readonly ICartRepository repository;
+        private readonly IOrderRepository repository;
         private readonly IMapper mapper;
 
-        public CartService(ICartRepository repository, IMapper mapper)
+        public OrderService(IOrderRepository repository, IMapper mapper)
         {
             this.repository = repository;
             this.mapper = mapper;
         }
 
-        public async Task<OrderProductDto> AddProductAsync(CreateOrderProductDto createOrderProduct)
+        public async Task<OrderNewDto> CreateOrderAsync()
         {
-            OrderProduct orderProduct = mapper.Map<OrderProduct>(createOrderProduct);
-            OrderProductDto orderProductDto = mapper.Map<OrderProductDto>(await repository.AddProductAsync(orderProduct));
+            var order = await repository.CreateOrderAsync();
+            return mapper.Map<OrderNewDto>(order);
+        }
+
+        public async Task<OrderProductDto> AddProductAsync(Guid orderId, AddProductDto addProductDto)
+        {
+            var orderProduct = mapper.Map<OrderProduct>(addProductDto);
+            var orderProductDto = mapper.Map<OrderProductDto>(await repository.AddProductAsync(orderId, orderProduct));
             return orderProductDto;
         }
 
         public async Task<OrderProductDto> UpdateProductAsync(Guid orderId, UpdateOrderProductDto orderProductDto)
         {
-            OrderProduct orderProduct = mapper.Map<OrderProduct>(orderProductDto);
-            OrderProductDto orderProductResultDto = mapper.Map<OrderProductDto>(await repository.UpdateProductAsync(orderId, orderProduct));
+            var orderProduct = mapper.Map<OrderProduct>(orderProductDto);
+            var orderProductResultDto = mapper.Map<OrderProductDto>(await repository.UpdateProductAsync(orderId, orderProduct));
             return orderProductResultDto;
         }
-        
+
         public async Task<bool> RemoveProductAsync(Guid orderId, Guid productId)
         {
             return await repository.RemoveProductAsync(orderId, productId);
         }
-     
+
         public async Task<OrderDto> GetByIdAsync(Guid orderId)
         {
-            var query = repository.GetByIdAsync(orderId);
+            decimal total = 0;
+            var query = repository.GetOrderByIdAsync(orderId);
             if (await query.SingleOrDefaultAsync() == null)
                 throw new ArgumentException($"No existe la orden con id: {orderId}");
 
-            return await GetResult(query);
-        }
-
-        public async Task<OrderDto> PayAsync(Guid orderId)
-        {
-            IQueryable<Order> query = await repository.PayAsync(orderId);
-            OrderDto orderDto = await GetResult(query);
-            await repository.UpdateOrderAsync(orderId, orderDto.Subtotal, orderDto.TotalPrice);
-            return orderDto;
-        }
-
-        public async Task<OrderDto> CancelAsync(Guid orderId)
-        {
-            IQueryable<Order> query = await repository.CancelAsync(orderId);
-            OrderDto orderDto = await GetResult(query);
-            return orderDto;
-        }
-
-        public async Task<OrderDto> GetResult(IQueryable<Order> query)
-        {
-            decimal total = 0;
             OrderDto orderDto = await query.Select(o => new OrderDto()
             {
                 Id = o.Id,
@@ -79,14 +60,31 @@ namespace BP.Ecommerce.Application.ServicesImplementations
                 Subtotal = o.Subtotal,
                 TotalPrice = o.TotalPrice
             }).SingleOrDefaultAsync();
+
             foreach (var product in orderDto.orderProducts)
             {
                 total += product.Total;
             }
+
             orderDto.Subtotal = total - (total * (decimal)0.12);
             orderDto.Iva = (total * (decimal)0.12);
             orderDto.TotalPrice = total;
             return orderDto;
         }
+
+        public async Task<OrderDto> PayAsync(Guid orderId)
+        {
+            await repository.PayAsync(orderId);
+            var orderDto = await GetByIdAsync(orderId);
+            await repository.UpdateOrderAsync(orderId, orderDto.Subtotal, orderDto.TotalPrice);
+            return orderDto;
+        }
+
+        public async Task<OrderDto> CancelAsync(Guid orderId)
+        {
+            await repository.CancelAsync(orderId);
+            return await GetByIdAsync(orderId);
+        }
+
     }
 }
