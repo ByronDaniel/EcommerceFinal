@@ -1,10 +1,12 @@
 ﻿using BP.Ecommerce.Application.DTOs;
 using BP.Ecommerce.Application.ServicesInterfaces;
 using BP.Ecommerce.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BP.Ecommerce.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -14,6 +16,12 @@ namespace BP.Ecommerce.API.Controllers
         public OrderController(IOrderService service)
         {
             this.service = service;
+        }
+
+        [HttpGet]
+        public async Task<List<OrderGetAllDto>> GetAllAsync(string? state, string order="asc", string sort = "state", int limit = 5, int offset = 0)
+        {
+            return await service.GetAllAsync(state, order, sort, limit, offset);
         }
 
         [HttpPost]
@@ -46,10 +54,10 @@ namespace BP.Ecommerce.API.Controllers
             return await service.GetByIdAsync(orderId);
         }
 
-        [HttpPut("Pay/{orderId}")]
-        public async Task<OrderDto> PayAsync(Guid orderId)
+        [HttpPut("Pay/{orderId}/DeliveryMethod/{deliveryMethodId}")]
+        public async Task<OrderDto> PayAsync(Guid orderId, Guid deliveryMethodId)
         {
-            return await service.PayAsync(orderId);
+            return await service.PayAsync(orderId, deliveryMethodId);
         }
 
         [HttpPut("Cancel/{orderId}")]

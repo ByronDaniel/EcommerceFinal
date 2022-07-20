@@ -14,46 +14,46 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             this.context = context;
         }
 
-        public async Task<List<T>> GetAllAsync(string? search, string? sort, string? order, int? limit, int? offset)
+        public async Task<List<T>> GetAllAsync(string? search, string sort = "NAME", string order = "ASC", int limit = 5, int offset = 0)
         {
-            //filter by status
             var query = context.Set<T>().Where(t => t.State == Status.Vigente.ToString());
-            //filter
+
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(t => t.Name == search);
+                query = query.Where(t => t.Name.ToUpper().Contains(search.ToUpper()));
             }
-            //Sort and order
+
             if (!string.IsNullOrEmpty(sort))
             {
                 switch (sort.ToUpper())
                 {
                     case "NAME":
-                        query = query.OrderBy(t => t.Name);
+                        query = order.ToUpper() == "ASC"
+                            ? query.OrderBy(t => t.Name)
+                            : order.ToUpper() == "DESC"
+                                ? query.OrderByDescending(t => t.Name)
+                                : throw new ArgumentException($"Argumento: {order} no valido");
                         break;
-
+                    default: 
+                        throw new ArgumentException($"Argumento: {sort} no valido");
                 }
             }
 
-            query = query.OrderBy(t => t.Name);
-            //pagination
-
-            return await context.Set<T>().Where(t => t.State == Status.Vigente.ToString()).ToListAsync();
+            query = query.Skip(offset).Take(limit);
+            return await query.ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
-            return item;
+            return await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
         }
 
         public async Task<T> PostAsync(T item)
         {
             bool itemExist = context.Set<T>().Any(t => t.Name == item.Name && t.State == Status.Vigente.ToString());
             if (itemExist)
-            {
                 throw new ArgumentException($"Ya existe el registro con nombre: {item.Name}");
-            }
+
             item.Name = item.Name.ToUpper();
             await context.Set<T>().AddAsync(item);
             await context.SaveChangesAsync();
@@ -72,6 +72,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
                 throw new ArgumentException($"Ya existe el registro con nombre: {item.Name}");
             }
 
+            item.Name = item.Name.ToUpper();
             item.DateModification = DateTime.Now;
             context.Entry(item).State = EntityState.Modified;
             await context.SaveChangesAsync();
@@ -80,7 +81,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            T item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
+            var item = await context.Set<T>().Where(t => t.State == Status.Vigente.ToString() && t.Id == id).SingleOrDefaultAsync();
             if (item == null)
                 throw new ArgumentException($"No existe el registro con id: {id}");
 

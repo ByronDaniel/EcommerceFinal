@@ -8,37 +8,37 @@ namespace BP.Ecommerce.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductTypeController : ControllerBase
+    public class DeliveryMethodController : ControllerBase
     {
-        private readonly IProductTypeService service;
+        private readonly IDeliveryMethodService service;
 
-        public ProductTypeController(IProductTypeService service)
+        public DeliveryMethodController(IDeliveryMethodService service)
         {
             this.service = service;
         }
 
         [HttpGet]
-        public async Task<List<ProductTypeDto>> GetAllAsync(string? search, string sort="Name", string order="Asc", int limit=5, int offset=0)
+        public async Task<List<DeliveryMethodDto>> GetAllAsync(string? search, string sort = "Name", string order="Asc", int limit=5, int offset=0)
         {
             return await service.GetAllAsync(search, sort, order, limit, offset);
         }
 
         [HttpGet("{id}")]
-        public async Task<ProductTypeDto> GetByIdAsync(Guid id)
+        public async Task<DeliveryMethodDto> GetByIdAsync(Guid id)
         {
             return await service.GetByIdAsync(id);
         }
 
         [HttpPost]
-        public async Task<ProductTypeDto> PostAsync(CreateProductTypeDto createProductTypeDto)
+        public async Task<DeliveryMethodDto> PostAsync(CreateDeliveryMethodDto createDeliveryMethodDto)
         {
-            return await service.PostAsync(createProductTypeDto);
+            return await service.PostAsync(createDeliveryMethodDto);
         }
 
         [HttpPut]
-        public async Task<ProductTypeDto> PutAsync(ProductTypeDto brandDto)
+        public async Task<DeliveryMethodDto> PutAsync(DeliveryMethodDto deliveryMethodDto)
         {
-            return await service.PutAsync(brandDto);
+            return await service.PutAsync(deliveryMethodDto);
         }
 
         [HttpDelete("{id}")]

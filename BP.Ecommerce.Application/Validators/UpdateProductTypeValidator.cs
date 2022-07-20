@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BP.Ecommerce.Application.Validators
 {
-    public class CreateBrandValidator : AbstractValidator<CreateBrandDto>
+    public class UpdateProductTypeValidator : AbstractValidator<ProductTypeDto>
     {
-        public CreateBrandValidator()
+        public UpdateProductTypeValidator()
         {
             RuleFor(x => x.Name)
                 .NotNull()

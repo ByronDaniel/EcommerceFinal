@@ -2,6 +2,6 @@
 {
     public class Brand : CatalogueEntity
     {
-
+        //Others Properties
     }
 }

@@ -9,23 +9,36 @@ using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
 {
-    public class BrandConfiguration //: IEntityTypeConfiguration<Brand>
+    public class BrandConfiguration : IEntityTypeConfiguration<Brand>
     {
-        //public void Configure(EntityTypeBuilder<Brand> builder)
-        //{
-        //    builder.Property("Id")
-        //                 .ValueGeneratedOnAdd()
-        //                 .HasColumnType("uniqueidentifier");
+        public void Configure(EntityTypeBuilder<Brand> builder)
+        {
+            builder.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-        //    builder.Property("Name")
-        //        .IsRequired()
-        //        .HasMaxLength(30)
-        //        .HasColumnType("nvarchar(30)");
+            builder.Property<DateTime>("DateCreation")
+                .HasColumnType("datetime2");
 
-        //    builder.HasKey("Id");
+            builder.Property<DateTime>("DateDeleted")
+                .HasColumnType("datetime2");
 
-        //    builder.ToTable("Brands");
+            builder.Property<DateTime>("DateModification")
+                .HasColumnType("datetime2");
 
-        //}
+            builder.Property<string>("Name")
+                .IsRequired()
+                .HasMaxLength(30)
+                .HasColumnType("nvarchar(30)");
+
+            builder.Property<string>("State")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+            builder.HasKey("Id");
+
+            builder.ToTable("Brands");
+
+        }
     }
 }

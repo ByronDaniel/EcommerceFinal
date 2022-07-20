@@ -2,6 +2,6 @@
 {
     public class ProductType : CatalogueEntity
     {
-        
+        //Others Properties
     }
 }

@@ -5,7 +5,7 @@
         Pendiente,
         Cancelado,
         Pagado,
-        Rembolsado,
+        Reembolsado,
         Eliminado,
         Vigente
     }

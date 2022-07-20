@@ -13,15 +13,17 @@ namespace BP.Ecommerce.Application.ServicesImplementations
         private readonly IGenericRepository<Brand> repository;
         private readonly IMapper mapper;
         private readonly IValidator<CreateBrandDto> validator;
+        private readonly IValidator<BrandDto> validatorBrandDto;
 
-        public BrandService(IGenericRepository<Brand> repository, IMapper mapper, IValidator<CreateBrandDto> validator)
+        public BrandService(IGenericRepository<Brand> repository, IMapper mapper, IValidator<CreateBrandDto> validator, IValidator<BrandDto> validatorBrandDto)
         {
             this.repository = repository;
             this.mapper = mapper;
             this.validator = validator;
+            this.validatorBrandDto = validatorBrandDto;
         }
 
-        public async Task<List<BrandDto>> GetAllAsync(string? search, string? sort, string? order, int? limit = 0, int? offset = 0)
+        public async Task<List<BrandDto>> GetAllAsync(string? search, string sort, string order, int limit, int offset)
         {
             List<Brand> brands = await repository.GetAllAsync(search, sort, order, limit, offset);
             return mapper.Map<List<BrandDto>>(brands);
@@ -47,6 +49,7 @@ namespace BP.Ecommerce.Application.ServicesImplementations
 
         public async Task<BrandDto> PutAsync(BrandDto brandDto)
         {
+            await validatorBrandDto.ValidateAndThrowAsync(brandDto);
             Brand brand = mapper.Map<Brand>(brandDto);
             Brand brandResult = await repository.PutAsync(brand);
             return mapper.Map<BrandDto>(brandResult);

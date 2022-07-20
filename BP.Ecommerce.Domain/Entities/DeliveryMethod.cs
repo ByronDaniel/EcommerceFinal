@@ -4,7 +4,6 @@ namespace BP.Ecommerce.Domain.Entities
 {
     public class DeliveryMethod : CatalogueEntity
     {
-        [Required]
-        public string Description { get; set; }
+        public decimal PriceByKm { get; set; } = 0;
     }
 }

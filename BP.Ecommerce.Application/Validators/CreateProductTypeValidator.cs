@@ -13,12 +13,12 @@ namespace BP.Ecommerce.Application.Validators
                 .WithMessage("No puede ser nulo o vacio");
 
             RuleFor(x => x.Name)
-                .Matches("^[a-zA-Z0-9]+$")
+                .Matches("^[a-zA-Z0-9 ]+$")
                 .WithMessage("Solo soporta numeros y letras");
 
             RuleFor(x => x.Name)
                 .Must(name => WordsValidateUpper(name))
-                .WithMessage("Marca debe ser en mayusculas");
+                .WithMessage("El nombre debe ser en mayusculas");
 
         }
 

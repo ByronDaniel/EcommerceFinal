@@ -3,33 +3,38 @@
     public interface IGenericRepository<T>
     {
         /// <summary>
-        /// Get all 
+        /// Obtiene todos los elementos, ademas permite buscar, ordenar, paginar
         /// </summary>
-        /// <returns>List of objects</returns>
-        public Task<List<T>> GetAllAsync(string? search, string? sort, string? order, int? limit, int? offset);
-
+        /// <param name="search"></param>
+        /// <param name="sort"></param>
+        /// <param name="order"></param>
+        /// <param name="limit"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public Task<List<T>> GetAllAsync(string? search, string sort, string order, int limit, int offset);
         /// <summary>
-        /// Get By Id
+        /// Obtiene elemento por su id
         /// </summary>
-        /// <returns>object</returns>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<T> GetByIdAsync(Guid id);
-
         /// <summary>
-        /// Post
+        /// Agrega un nuevo elemento
         /// </summary>
-        /// <returns>object</returns>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public Task<T> PostAsync(T item);
-
         /// <summary>
-        /// Put
+        /// Actualiza un elemento
         /// </summary>
-        /// <returns>object</returns>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public Task<T> PutAsync(T item);
-
         /// <summary>
-        /// Delete
+        /// Elimina un elemento de manera logica
         /// </summary>
-        /// <returns>boolean</returns>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task<bool> DeleteAsync(Guid id);
     }
 }

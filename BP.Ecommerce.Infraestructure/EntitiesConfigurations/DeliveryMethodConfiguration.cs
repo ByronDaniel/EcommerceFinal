@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
 {
-    public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductType>
+    public class DeliveryMethodConfiguration : IEntityTypeConfiguration<DeliveryMethod>
     {
-        public void Configure(EntityTypeBuilder<ProductType> builder)
+        public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
             builder.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,13 +31,17 @@ namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
                 .HasMaxLength(30)
                 .HasColumnType("nvarchar(30)");
 
+            builder.Property<decimal>("PriceByKm")
+                .HasColumnType("decimal(18,2)");
+
             builder.Property<string>("State")
                 .IsRequired()
                 .HasColumnType("nvarchar(max)");
 
             builder.HasKey("Id");
 
-            builder.ToTable("ProductTypes", (string)null);
+            builder.ToTable("DeliveryMethods");
+
         }
     }
 }

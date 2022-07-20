@@ -13,39 +13,40 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
         {
             _context = context;
         }
-        public async Task<IQueryable<Product>> GetQueryable(string search, int limit, int offset, string sort, string order)
+        public async Task<IQueryable<Product>> GetQueryable(string? search, int limit, int offset, string sort, string order)
         {
-            //Filter By Status
             var query = _context.Products.Where(b => b.State == Status.Vigente.ToString());
 
-            //Search
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(b => b.Name.ToUpper().Contains(search.ToUpper()));
+                query = from product in query
+                        where product.Name.Contains(search) || product.Description.Contains(search)
+                        select product;
             }
 
-            //Sort and Order
-            switch (sort.ToUpper())
+            if (!string.IsNullOrEmpty(sort))
             {
-                case "NAME":
-                    query = order.ToUpper() == "ASC"
-                        ? query.OrderBy(b => b.Name)
-                        : order.ToUpper() == "DESC"
-                            ? query.OrderByDescending(b => b.Name)
-                            : throw new ArgumentException($"Argumento: {order} no valido");
-                    break;
-                case "PRICE":
-                    query = order.ToUpper() == "ASC"
-                        ? query.OrderBy(b => b.Price)
-                        : order.ToUpper() == "DESC"
-                            ? query.OrderByDescending(b => b.Price)
-                            : throw new ArgumentException($"Argumento: {order} no valido");
-                    break;
-                default:
-                    throw new ArgumentException($"Argumento: {sort} no valido");
+                switch (sort.ToUpper())
+                {
+                    case "NAME":
+                        query = order.ToUpper() == "ASC"
+                            ? query.OrderBy(b => b.Name)
+                            : order.ToUpper() == "DESC"
+                                ? query.OrderByDescending(b => b.Name)
+                                : throw new ArgumentException($"Argumento: {order} no valido");
+                        break;
+                    case "PRICE":
+                        query = order.ToUpper() == "ASC"
+                            ? query.OrderBy(b => b.Price)
+                            : order.ToUpper() == "DESC"
+                                ? query.OrderByDescending(b => b.Price)
+                                : throw new ArgumentException($"Argumento: {order} no valido");
+                        break;
+                    default:
+                        throw new ArgumentException($"Argumento: {sort} no valido");
+                }
             }
 
-            //pagination
             query = query.Skip(offset).Take(limit);
 
             return query;

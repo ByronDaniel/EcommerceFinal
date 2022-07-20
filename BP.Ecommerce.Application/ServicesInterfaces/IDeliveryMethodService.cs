@@ -2,7 +2,7 @@
 
 namespace BP.Ecommerce.Application.ServicesInterfaces
 {
-    public interface IProductTypeService
+    public interface IDeliveryMethodService
     {
         /// <summary>
         /// Obtiene todos los metodos de entrega, ademas permite buscar, ordenar y paginar
@@ -13,27 +13,27 @@ namespace BP.Ecommerce.Application.ServicesInterfaces
         /// <param name="limit"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public Task<List<ProductTypeDto>> GetAllAsync(string? search, string sort, string order, int limit, int offset);
+        public Task<List<DeliveryMethodDto>> GetAllAsync(string? search, string sort, string order, int limit, int offset);
         /// <summary>
-        /// Obtiene metodo de entrega por Id
+        /// Obtiene metodo de entrega por id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<ProductTypeDto> GetByIdAsync(Guid id);
+        public Task<DeliveryMethodDto> GetByIdAsync(Guid id);
         /// <summary>
-        /// Crea nuevo metodo de entrega
+        /// Agrega nuevo metodo de entrega
         /// </summary>
-        /// <param name="createProductTypeDto"></param>
+        /// <param name="createDeliveryMethodDto"></param>
         /// <returns></returns>
-        public Task<ProductTypeDto> PostAsync(CreateProductTypeDto createProductTypeDto);
+        public Task<DeliveryMethodDto> PostAsync(CreateDeliveryMethodDto createDeliveryMethodDto);
         /// <summary>
         /// Actualiza metodo de entrega
         /// </summary>
-        /// <param name="productTypeDto"></param>
+        /// <param name="deliveryMethodDto"></param>
         /// <returns></returns>
-        public Task<ProductTypeDto> PutAsync(ProductTypeDto productTypeDto);
+        public Task<DeliveryMethodDto> PutAsync(DeliveryMethodDto deliveryMethodDto);
         /// <summary>
-        /// Elimina metodo de entrega
+        /// Elimina metodo de entrega por id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

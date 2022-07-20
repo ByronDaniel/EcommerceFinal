@@ -1,6 +1,6 @@
 ﻿namespace BP.Ecommerce.Domain.Entities
 {
-    public class OrderDto
+    public class OrderGetAllDto
     {
         public Guid Id { get; set; }
         public virtual List<OrderProductResultDto>? orderProducts { get; set; }

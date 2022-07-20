@@ -48,7 +48,7 @@ namespace BP.Ecommerce.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("BP.Ecommerce.Domain.Entities.DeliveryMethod", b =>
@@ -66,14 +66,13 @@ namespace BP.Ecommerce.Infraestructure.Migrations
                     b.Property<DateTime>("DateModification")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("PriceByKm")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -81,7 +80,7 @@ namespace BP.Ecommerce.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryMethods");
+                    b.ToTable("DeliveryMethods", (string)null);
                 });
 
             modelBuilder.Entity("BP.Ecommerce.Domain.Entities.Order", b =>
@@ -106,17 +105,17 @@ namespace BP.Ecommerce.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Subtotal")
+                    b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("TotalPrice")
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeliveryMethodId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("BP.Ecommerce.Domain.Entities.OrderProduct", b =>
@@ -149,7 +148,7 @@ namespace BP.Ecommerce.Infraestructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProducts");
+                    b.ToTable("OrderProducts", (string)null);
                 });
 
             modelBuilder.Entity("BP.Ecommerce.Domain.Entities.Product", b =>

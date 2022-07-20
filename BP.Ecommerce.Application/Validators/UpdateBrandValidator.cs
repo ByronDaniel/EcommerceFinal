@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BP.Ecommerce.Application.Validators
 {
-    public class CreateBrandValidator : AbstractValidator<CreateBrandDto>
+    public class UpdateBrandValidator : AbstractValidator<BrandDto>
     {
-        public CreateBrandValidator()
+        public UpdateBrandValidator()
         {
             RuleFor(x => x.Name)
                 .NotNull()
@@ -18,7 +18,7 @@ namespace BP.Ecommerce.Application.Validators
 
             RuleFor(x => x.Name)
                 .Must(name => WordsValidateUpper(name))
-                .WithMessage("El nombre debe ser en mayusculas");
+                .WithMessage("Marca debe ser en mayusculas");
 
         }
 

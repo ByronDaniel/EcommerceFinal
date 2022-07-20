@@ -14,6 +14,7 @@ namespace BP.Ecommerce.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IProductTypeService, ProductTypeService>();
+            services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();
 

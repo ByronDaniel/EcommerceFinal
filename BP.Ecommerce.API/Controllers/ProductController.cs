@@ -1,9 +1,11 @@
 ﻿using BP.Ecommerce.Application.Dtos;
 using BP.Ecommerce.Application.ServicesInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BP.Ecommerce.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -16,7 +18,7 @@ namespace BP.Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<ProductDto>> GetAllAsync(string? search = "", int limit = 5, int offset = 0, string sort = "Name", string order = "asc")
+        public async Task<List<ProductDto>> GetAllAsync(string? search, string sort = "Name", string order = "Asc",int limit = 5, int offset = 0)
         {
             return await _service.GetAllAsync(search, limit, offset, sort, order);
         }

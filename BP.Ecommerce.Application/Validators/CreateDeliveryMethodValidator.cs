@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BP.Ecommerce.Application.Validators
 {
-    public class CreateBrandValidator : AbstractValidator<CreateBrandDto>
+    public class CreateDeliveryMethodValidator : AbstractValidator<CreateDeliveryMethodDto>
     {
-        public CreateBrandValidator()
+        public CreateDeliveryMethodValidator()
         {
             RuleFor(x => x.Name)
                 .NotNull()

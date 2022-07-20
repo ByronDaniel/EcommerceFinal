@@ -12,6 +12,9 @@ namespace BP.Ecommerce.API.Utils
             CreateMap<Brand, BrandDto>();
             CreateMap<BrandDto, Brand>();
             CreateMap<CreateBrandDto, Brand>();
+            CreateMap<CreateDeliveryMethodDto, DeliveryMethod>();
+            CreateMap<DeliveryMethod, DeliveryMethodDto>();
+            CreateMap<DeliveryMethodDto, DeliveryMethod>();
             CreateMap<ProductType, ProductTypeDto>();
             CreateMap<ProductTypeDto, ProductType>();
             CreateMap<CreateProductTypeDto, ProductType>();
@@ -20,6 +23,7 @@ namespace BP.Ecommerce.API.Utils
             CreateMap<Order, OrderDto>();
             CreateMap<Order, OrderNewDto>();
             CreateMap<OrderDto, Order>();
+            CreateMap<Order, OrderGetAllDto>();
             CreateMap<CreateProductDto, Product>();
             CreateMap<AddProductDto, OrderProduct>();
             CreateMap<UpdateOrderProductDto, OrderProduct>();

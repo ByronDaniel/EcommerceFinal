@@ -12,19 +12,21 @@ namespace BP.Ecommerce.Application.ServicesImplementations
     {
         private readonly IGenericRepository<ProductType> repository;
         private readonly IMapper mapper;
-        private readonly IValidator<CreateProductTypeDto> validator;
-
-        public ProductTypeService(IGenericRepository<ProductType> repository, IMapper mapper, IValidator<CreateProductTypeDto> validator)
+        private readonly IValidator<CreateProductTypeDto> validatorCreate;
+        private readonly IValidator<ProductTypeDto> validatorUpdate;
+        
+        public ProductTypeService(IGenericRepository<ProductType> repository, IMapper mapper, IValidator<CreateProductTypeDto> validatorCreate, IValidator<ProductTypeDto> validatorUpdate)
         {
             this.repository = repository;
             this.mapper = mapper;
-            this.validator = validator;
+            this.validatorCreate = validatorCreate;
+            this.validatorUpdate = validatorUpdate;
         }
 
-        public async Task<List<ProductTypeDto>> GetAllAsync(string? search, string? sort, string? order, int? limit = 0, int? offset = 0)
+        public async Task<List<ProductTypeDto>> GetAllAsync(string? search, string sort, string order, int limit, int offset)
         {
-            List<ProductType> brands = await repository.GetAllAsync(search, sort, order, limit, offset);
-            return mapper.Map<List<ProductTypeDto>>(brands);
+            List<ProductType> productTypes = await repository.GetAllAsync(search, sort, order, limit, offset);
+            return mapper.Map<List<ProductTypeDto>>(productTypes);
         }
 
         public async Task<ProductTypeDto> GetByIdAsync(Guid id)
@@ -36,20 +38,22 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             return mapper.Map<ProductTypeDto>(productType);
         }
 
-        public async Task<ProductTypeDto> PostAsync(CreateProductTypeDto createBrandDto)
+        public async Task<ProductTypeDto> PostAsync(CreateProductTypeDto createProductTypeDto)
         {
-            await validator.ValidateAndThrowAsync(createBrandDto);
+            await validatorCreate.ValidateAndThrowAsync(createProductTypeDto);
 
-            ProductType productType = mapper.Map<ProductType>(createBrandDto);
-            ProductType brandResult = await repository.PostAsync(productType);
-            return mapper.Map<ProductTypeDto>(brandResult);
+            ProductType productType = mapper.Map<ProductType>(createProductTypeDto);
+            ProductType productTypeResult = await repository.PostAsync(productType);
+            return mapper.Map<ProductTypeDto>(productTypeResult);
         }
 
-        public async Task<ProductTypeDto> PutAsync(ProductTypeDto brandDto)
+        public async Task<ProductTypeDto> PutAsync(ProductTypeDto updateProductTypeDto)
         {
-            ProductType productType = mapper.Map<ProductType>(brandDto);
-            ProductType brandResult = await repository.PutAsync(productType);
-            return mapper.Map<ProductTypeDto>(brandResult);
+            await validatorUpdate.ValidateAndThrowAsync(updateProductTypeDto);
+
+            ProductType productType = mapper.Map<ProductType>(updateProductTypeDto);
+            ProductType productTypeResult = await repository.PutAsync(productType);
+            return mapper.Map<ProductTypeDto>(productTypeResult);
         }
 
         public async Task<bool> DeleteAsync(Guid id)

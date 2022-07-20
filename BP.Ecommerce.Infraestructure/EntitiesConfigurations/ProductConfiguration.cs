@@ -13,51 +13,67 @@ namespace BP.Ecommerce.Infraestructure.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.Property("Id")
+            builder.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-            builder.Property("BrandId")
+            builder.Property<Guid>("BrandId")
                 .HasColumnType("uniqueidentifier");
 
-            builder.Property("Description")
+            builder.Property<DateTime>("DateCreation")
+                .HasColumnType("datetime2");
+
+            builder.Property<DateTime>("DateDeleted")
+                .HasColumnType("datetime2");
+
+            builder.Property<DateTime>("DateModification")
+                .HasColumnType("datetime2");
+
+            builder.Property<string>("Description")
                 .IsRequired()
                 .HasColumnType("nvarchar(max)");
 
-            builder.Property("Name")
+            builder.Property<string>("Name")
                 .IsRequired()
                 .HasMaxLength(40)
                 .HasColumnType("nvarchar(40)");
 
-            builder.Property("Price")
+            builder.Property<decimal>("Price")
                 .HasColumnType("decimal(18,2)");
 
-            builder.Property("ProductTypeId")
+            builder.Property<Guid>("ProductTypeId")
                 .HasColumnType("uniqueidentifier");
 
-            builder.Property("Stock")
+            builder.Property<string>("State")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+            builder.Property<int>("Stock")
                 .HasColumnType("int");
 
             builder.HasKey("Id");
+
             builder.HasIndex("BrandId");
+
             builder.HasIndex("ProductTypeId");
 
-            builder.ToTable("Products");
+            builder.ToTable("Products", (string)null);
 
-            builder.HasOne(p => p.Brand)
+            builder.HasOne("BP.Ecommerce.Domain.Entities.Brand", "Brand")
                         .WithMany()
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-            builder.Navigation("Brand");
 
-            builder.HasOne(p => p.ProductType)
+            builder.HasOne("BP.Ecommerce.Domain.Entities.ProductType", "ProductType")
                 .WithMany()
                 .HasForeignKey("ProductTypeId")
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
-            builder.Navigation("ProductType");
 
+            builder.Navigation("Brand");
+
+            builder.Navigation("ProductType");
         }
     }
 }
