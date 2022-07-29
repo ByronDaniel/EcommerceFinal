@@ -20,7 +20,7 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             if (!string.IsNullOrEmpty(search))
             {
                 query = from product in query
-                        where product.Name.Contains(search) || product.Description.Contains(search)
+                        where product.Name.Contains(search) || product.Description.Contains(search) || product.ProductTypeId.ToString().Equals(search)
                         select product;
             }
 

@@ -25,10 +25,12 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             {
                 Id = p.Id,
                 Name = p.Name,
+                ImageUrl = p.ImageUrl,
                 Description = p.Description,
                 Stock = p.Stock,
                 Price = p.Price,
                 BrandId = p.BrandId,
+                Brand = p.Brand.Name,
                 ProductTypeId = p.ProductTypeId,
             }).ToListAsync();
         }
@@ -40,10 +42,12 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             {
                 Id = p.Id,
                 Name = p.Name,
+                ImageUrl = p.ImageUrl,
                 Description = p.Description,
                 Stock = p.Stock,
                 Price = p.Price,
                 BrandId = p.BrandId,
+                Brand = p.Brand.Name,
                 ProductTypeId = p.ProductTypeId,
             }).SingleOrDefaultAsync();
         }
@@ -55,10 +59,12 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             {
                 Id = p.Id,
                 Name = p.Name,
+                ImageUrl = p.ImageUrl,
                 Description = p.Description,
                 Stock = p.Stock,
                 Price = p.Price,
                 BrandId = p.BrandId,
+                Brand = p.Brand.Name,
                 ProductTypeId = p.ProductTypeId,
             }).SingleOrDefaultAsync();
         }
@@ -70,10 +76,12 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             {
                 Id = p.Id,
                 Name = p.Name,
+                ImageUrl = p.ImageUrl,
                 Description = p.Description,
                 Stock = p.Stock,
                 Price = p.Price,
                 BrandId = p.BrandId,
+                Brand = p.Brand.Name,
                 ProductTypeId = p.ProductTypeId,
             }).SingleOrDefaultAsync();
         }

@@ -72,7 +72,7 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             {
                 Id = o.Id,
                 DeliveryMethod = o.DeliveryMethod.Name,
-                orderProducts = o.orderProducts.Select(op => new OrderProductResultDto() { Product = op.Product.Name, Price = op.Product.Price, ProductQuantity = op.ProductQuantity, Total = op.Total }).ToList(),
+                orderProducts = o.orderProducts.Select(op => new OrderProductResultDto() {ProductId = op.Product.Id, Product = op.Product.Name, ImageUrl = op.Product.ImageUrl, Price = op.Product.Price, Stock = op.Product.Stock, ProductQuantity = op.ProductQuantity, Total = op.Total }).ToList(),
                 State = o.State,
                 DeliveryMethodPrice = o.DeliveryMethod.PriceByKm != null? o.DeliveryMethod.PriceByKm: 0,
                 Subtotal = o.Subtotal,
