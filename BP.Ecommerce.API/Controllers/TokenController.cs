@@ -1,5 +1,6 @@
 ﻿using BP.Ecommerce.API.Utils;
 using BP.Ecommerce.Application.Dtos;
+using BP.Ecommerce.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -22,19 +23,19 @@ namespace BP.Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<string> TokenAsync(User input)
+        public async Task<TokenDto> TokenAsync(User input)
         {
             var userTests = new List<User> {
                 new User(){UserName="Byron", Password="123"},
-                new User(){UserName="Maria", Password="123"},
-                new User(){UserName="Evelyn", Password="123"}
+                new User(){UserName="Maria", Password="MiContrasena"},
+                new User(){UserName="Evelyn", Password="Eve123"}
             };
 
             var userTest = userTests.Where(u => u.UserName == input.UserName && u.Password == input.Password).FirstOrDefault();
             // 1. Validate User
             if (userTest == null)
             {
-                throw new AuthenticationException("User or Password Incorrect!"); ;
+                throw new AuthenticationException("Usuario o Contraseña incorrecta"); ;
             }
 
             // 2. Generate Claims
@@ -61,7 +62,11 @@ namespace BP.Ecommerce.API.Controllers
 
             // 5. Write and return Token
             var jwt = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-            return jwt;
+            var tokenDto = new TokenDto()
+            {
+                Token = jwt
+            };
+            return tokenDto;
         }
     }
     public class User
