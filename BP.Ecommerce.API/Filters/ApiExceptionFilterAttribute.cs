@@ -164,7 +164,7 @@ namespace BP.Ecommerce.API.Filters
             var details = new ProblemDetails()
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
-                Title = "There is an error, try again later.",
+                Title = "Ocurrió un error, intentelo más tarde",
                 Detail = exception.Message
             };
 
