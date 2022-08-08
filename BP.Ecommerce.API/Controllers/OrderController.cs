@@ -19,7 +19,7 @@ namespace BP.Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<OrderGetAllDto>> GetAllAsync(string? state, string order="asc", string sort = "state", int limit = 5, int offset = 0)
+        public async Task<List<OrderGetAllDto>> GetAllAsync(string? state, string order="asc", string sort = "state", int limit = 0, int offset = 0)
         {
             return await service.GetAllAsync(state, order, sort, limit, offset);
         }

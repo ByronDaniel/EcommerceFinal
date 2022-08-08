@@ -38,8 +38,10 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
                         throw new ArgumentException($"Argumento: {sort} no valido");
                 }
             }
-
-            query = query.Skip(offset).Take(limit);
+            if (limit != 0)
+            {
+                query = query.Skip(offset).Take(limit);
+            }
             return await query.ToListAsync();
         }
 

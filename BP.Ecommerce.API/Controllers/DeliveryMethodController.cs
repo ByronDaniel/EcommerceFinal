@@ -18,7 +18,7 @@ namespace BP.Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<DeliveryMethodDto>> GetAllAsync(string? search, string sort = "Name", string order="Asc", int limit=5, int offset=0)
+        public async Task<List<DeliveryMethodDto>> GetAllAsync(string? search, string sort = "Name", string order="Asc", int limit=0, int offset=0)
         {
             return await service.GetAllAsync(search, sort, order, limit, offset);
         }
