@@ -14,21 +14,9 @@ namespace BP.Ecommerce.Application.Validators
 
             RuleFor(x => x.Name)
                 .Matches("^[a-zA-Z0-9 ]+$")
-                .WithMessage("Solo soporta numeros y letras");
-
-            RuleFor(x => x.Name)
-                .Must(name => WordsValidateUpper(name))
-                .WithMessage("El nombre debe ser en mayusculas");
+                .WithMessage("Solo soporta numeros y letras");  
 
         }
 
-        public bool WordsValidateUpper(string word)
-        {
-            if (word.ToUpper() == word)
-            {
-                return true;
-            }
-            return false;
-        }
     }
 }
