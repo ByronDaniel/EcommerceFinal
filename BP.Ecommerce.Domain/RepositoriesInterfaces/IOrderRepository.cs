@@ -67,5 +67,8 @@ namespace BP.Ecommerce.Domain.RepositoriesInterfaces
         /// <param name="totalPrice"></param>
         /// <returns></returns>
         public Task<Order> UpdateOrderAsync(Guid orderId, decimal subtotal, decimal totalPrice);
+
+        public Task<int> GetProductsQuantity(Guid orderId);
+
     }
 }

@@ -240,5 +240,9 @@ namespace BP.Ecommerce.Infraestructure.RepositoriesImplementations
             return order;
         }
 
+        public async Task<int> GetProductsQuantity(Guid orderId)
+        {
+            return this.context.OrderProducts.Where(e => e.OrderId == orderId).Count();
+        }
     }
 }

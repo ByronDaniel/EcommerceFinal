@@ -104,5 +104,9 @@ namespace BP.Ecommerce.Application.ServicesImplementations
             return await GetByIdAsync(orderId);
         }
 
+        public async Task<int> GetProductsQuantity(Guid orderId)
+        {
+            return await this.repository.GetProductsQuantity(orderId);
+        }
     }
 }

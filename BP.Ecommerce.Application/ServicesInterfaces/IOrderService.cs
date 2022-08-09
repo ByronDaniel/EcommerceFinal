@@ -60,5 +60,8 @@ namespace BP.Ecommerce.Application.ServicesInterfaces
         /// <param name="orderId"></param>
         /// <returns></returns>
         public Task<OrderDto> CancelAsync(Guid orderId);
+
+        public Task<int> GetProductsQuantity(Guid orderId);
+        
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BP.Ecommerce.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -52,6 +52,12 @@ namespace BP.Ecommerce.API.Controllers
         public async Task<OrderDto> GetByIdAsync(Guid orderId)
         {
             return await service.GetByIdAsync(orderId);
+        }
+
+        [HttpGet("Quantity-products")]
+        public async Task<int> GetProductQuantityAsync(Guid orderId)
+        {
+            return await service.GetProductsQuantity(orderId);
         }
 
         [HttpPut("Pay/{orderId}/DeliveryMethod/{deliveryMethodId}")]
